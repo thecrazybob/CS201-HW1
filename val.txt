@@ -1,3 +1,75 @@
-c1's id: 1
-c1's type: r
-Total cabinets: 1
+List of all cabinets:
+Testing add cabinet
+
+Added a cabinet: ID 101 and dimensions 3 to 4
+Added a cabinet: ID 102 and dimensions 5 to 3
+Added a cabinet: ID 103 and dimensions 8 to 8
+
+Cannot add the cabinet: ID 103 already in the system
+Cannot add the cabinet: dimensions are out of bounds 
+Added a cabinet: ID 201 and dimensions 9 to 9
+
+Added a cabinet: ID 203 and dimensions 9 to 3
+Added a cabinet: ID 205 and dimensions 4 to 4
+
+List of all cabinets:
+ID: 101, Dim: 3x4, Number of empty slots: 12
+ID: 102, Dim: 5x3, Number of empty slots: 15
+ID: 103, Dim: 8x8, Number of empty slots: 64
+ID: 201, Dim: 9x9, Number of empty slots: 81
+ID: 203, Dim: 9x3, Number of empty slots: 27
+ID: 205, Dim: 4x4, Number of empty slots: 16
+
+
+Testing remove cabinet
+
+Cabinet 452 does not exist in the system
+Cabinet 101 has been removed
+Cabinet 205 has been removed
+
+Cabinet 203 has been removed
+Cabinet 347 does not exist in the system
+Cabinet 201 has been removed
+
+Added a cabinet: ID 101 and dimensions 7 to 7
+
+List of all cabinets:
+ID: 102, Dim: 5x3, Number of empty slots: 15
+ID: 103, Dim: 8x8, Number of empty slots: 64
+ID: 101, Dim: 7x7, Number of empty slots: 49
+
+
+Testing place chemical
+
+
+
+
+
+
+List of all cabinets:
+ID: 102, Dim: 5x3, Number of empty slots: 15
+ID: 103, Dim: 8x8, Number of empty slots: 64
+ID: 101, Dim: 7x7, Number of empty slots: 49
+
+
+Testing find chemical
+
+
+
+
+
+Testing show cabinet contents
+
+
+
+
+
+
+Testing remove chemical
+
+
+
+Cabinet 103 has been removed
+
+Cabinet 102 has been removed
+

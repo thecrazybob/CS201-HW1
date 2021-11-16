@@ -4,7 +4,7 @@ using namespace std;
 
 int main() {
 
-    Chemical c1 = Chemical(1, 'r', "sex");
+    Chemical c1 = Chemical(1, 'r', "A1");
 
     cout << "c1's id: " << c1.getId() << "\n";
     cout << "c1's type: " << c1.getType() << "\n";

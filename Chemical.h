@@ -19,7 +19,6 @@ class Chemical {
         // Constructor and destructor methods
         Chemical();
         Chemical(int new_id, char new_type, string location);
-        ~Chemical();
 
         // Getter methods
         int getId();

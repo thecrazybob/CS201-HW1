@@ -10,7 +10,7 @@ LabOrganizer::LabOrganizer() {
     // Initiate total_cabinets with value of 0
     total_cabinets = 0;
 
-    cabinets = new Cabinet[0];
+    cabinets = NULL;
 }
 
 // Destructor
@@ -28,37 +28,129 @@ LabOrganizer::~LabOrganizer() {
 
 void LabOrganizer::addCabinet(int id, int rows, int columns) {
 
-    // Increment number of cabinets
-    total_cabinets += 1;
-
-    // New array with the new cabinet object
-    Cabinet *new_cabinets = new Cabinet[total_cabinets];
-
-    // Copy over cabinets array to the newly allocated array
-    for (int i = 0; i < (total_cabinets - 1); i++) {
-        new_cabinets[i] = cabinets[i];
+    // Check if ID already exists
+    for (int i = 0; i < total_cabinets; i++) {
+        if (cabinets[i].getId() == id) {
+            cout << "Cannot add the cabinet: ID " << id << " already in the system\n";
+            return;
+        }
     }
 
-    // Store the index of the new element to be added
-    int indexOfNewElement = total_cabinets - 1;
+    // Check if out of bounds
+    if (rows > 9 || columns > 9 || rows < 0 || columns < 0) {
+        cout << "Cannot add the cabinet: dimensions are out of bounds \n";
+        return;
+    }
 
-    // Initialize newly added cabinet
-    new_cabinets[indexOfNewElement] = Cabinet(id, rows, columns);
+    // If empty - create first cabinet
+    if (total_cabinets == 0) {
 
-    // // Delete the existing cabinets array
-    // delete [] cabinets;
+        cabinets = new Cabinet[1];
+        cabinets[0] = Cabinet(id, rows, columns);
 
-    // // Point cabinets pointer to the new array
-    // cabinets = new_cabinets;
+    }
 
+    else {
+
+        // New array with the new cabinet object
+        Cabinet *new_cabinets = new Cabinet[total_cabinets + 1];
+
+        // Copy over cabinets array to the newly allocated array
+        for (int i = 0; i < (total_cabinets); i++) {
+            new_cabinets[i] = cabinets[i];
+        }
+
+        new_cabinets[total_cabinets] = Cabinet(id, rows, columns);
+
+        // Delete the existing cabinets array
+        delete [] cabinets;
+
+        // Point cabinets pointer to the new array
+        cabinets = new_cabinets;
+
+        // Delete new array
+        // delete [] new_cabinets;
+
+    }
+
+    total_cabinets++;
+
+    cout << "Added a cabinet: ID " << id << " and dimensions " << rows << " to " << columns << "\n";
 
 }
 
 void LabOrganizer::removeCabinet(int id) {
 
+    // Determine if a cabinet is removed
+    int deleted = 0;
+    bool detected = false;
+
+    // Determine if an item needs to be deleted
+    for (int i = 0; i < (total_cabinets); i++) {
+
+        if (cabinets[i].getId() == id) {
+            deleted = 1;
+        }
+
+    }
+
+    if (deleted != 0) {
+
+        total_cabinets = total_cabinets - 1;
+
+        // New array with the possibly removed cabinet object
+        Cabinet *new_cabinets = new Cabinet[total_cabinets];
+
+        // Copy over cabinets array to the newly allocated array
+        for (int i = 0; i < total_cabinets; i++) {
+
+            if (cabinets[i].getId() == id) {
+
+                detected = true;
+
+                new_cabinets[i] = cabinets[i + 1];
+
+            }
+
+            else {
+
+                if (!detected) {
+                    new_cabinets[i] = cabinets[i];
+                }
+                else {
+                    new_cabinets[i] = cabinets[i + 1];
+                }
+
+            }
+
+        }
+
+        // Delete the existing cabinets array
+        delete [] cabinets;
+
+        // Point cabinets pointer to the new array
+
+        cabinets = new_cabinets;
+
+        cout << "Cabinet " << id << " has been removed" << endl;
+
+    }
+    else {
+
+        cout << "Cabinet " << id << " does not exist in the system" << endl;
+
+    }
+
 }
 
 void LabOrganizer::listCabinets() {
+
+    cout << "List of all cabinets:";
+    cout << endl;
+
+    for (int i = 0; i < total_cabinets; i++) {
+        cout << "ID: " << cabinets[i].getId() << ", Dim: " << cabinets[i].getRows() << "x" << cabinets[i].getColumns() << ", Number of empty slots: " << cabinets[i].getEmpty() << endl;
+    }
 
 }
 
@@ -67,6 +159,15 @@ void LabOrganizer::cabinetContents(int id) {
 }
 
 void LabOrganizer::placeChemical(int cabinetId, string location, string chemType, int chemID) {
+    char chemicalType = chemType[0];
+
+    for (int i = 0; i < total_cabinets; i++) {
+        if (cabinets[i].getId() == cabinetId) {
+
+            cabinets[i].placeChemical(location, chemicalType, chemID);
+
+        }
+    }
 
 }
 

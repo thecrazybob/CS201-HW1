@@ -16,14 +16,6 @@ Chemical::Chemical(int new_id, char new_type, string new_location) {
     location = new_location;
 }
 
-// Destructor
-
-Chemical::~Chemical() {
-    
-    // todo
-    
-}
-
 // Implementations for methods in "Chemical.h"
 
 int Chemical::getId() {
