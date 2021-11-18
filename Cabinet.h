@@ -14,10 +14,11 @@ class Cabinet {
         // Number of columns (should be restricted to a maximum of 9)
         int columns;
 
-        // Dynamically allocated array of chemicals
-        Chemical** chemicals;
 
     public:
+
+        // Dynamically allocated array of chemicals
+        Chemical** chemicals;
 
         Cabinet(int new_id, int new_rows, int new_columns);
         Cabinet();
@@ -37,7 +38,7 @@ class Cabinet {
 
         void findChemical(int id);
         void showContents();
-        void placeChemical(string location, char chemType, int chemId);
+        void placeChemical(string location, char chemType, int chemId, string chemName);
         void removeChemical(int id);
 
         // Helper methods

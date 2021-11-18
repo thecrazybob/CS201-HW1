@@ -96,6 +96,29 @@ void LabOrganizer::removeCabinet(int id) {
 
     if (deleted != 0) {
 
+        // Delete all chemicals inside the cabinet before removing the cabinet
+        for (int i = 0; i < total_cabinets; i++) {
+
+            if (cabinets[i].getId() == id) {
+
+                for (int j = 0; j < cabinets[i].getRows(); j++) {
+
+                    for (int k = 0; k < cabinets[i].getColumns(); k++) {
+
+                        if (cabinets[i].chemicals[j][k].getType() != '+') {
+
+                            removeChemical(cabinets[i].chemicals[j][k].getId());
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
         total_cabinets = total_cabinets - 1;
 
         // New array with the possibly removed cabinet object
@@ -156,15 +179,70 @@ void LabOrganizer::listCabinets() {
 
 void LabOrganizer::cabinetContents(int id) {
 
+    bool firstFound = false;
+
+    for (int i = 0; i < total_cabinets; i++) {
+
+        if (cabinets[i].getId() == id) {
+            cout << "ID: " << id << ", " << cabinets[i].getRows() << "x" << cabinets[i].getColumns() << ", empty: " << cabinets[i].getEmpty() << ". Chemicals: ";
+
+            // Print out chemicals
+            for (int j = 0; j < cabinets[i].getRows(); j++) {
+
+                for (int k = 0; k < cabinets[i].getColumns(); k++) {
+
+                    if (cabinets[i].chemicals[j][k].getType() != '+') {
+
+                        firstFound ? cout << ", " : cout << "";
+
+                        firstFound = true;
+
+                        cout << cabinets[i].indexToLocation(j,k) << ": " << cabinets[i].chemicals[j][k].getId();
+
+                    }
+                }
+
+            }
+
+            return;
+        }
+
+    }
+
+    cout << "Cabinet " << id << " is not in the system";
+
 }
 
 void LabOrganizer::placeChemical(int cabinetId, string location, string chemType, int chemID) {
+    // Store first character of chemical name as char
     char chemicalType = chemType[0];
 
+    // Capitalize first character of chemical name
+    chemType[0] = toupper(chemType[0]);
+
+    // Verify if the same chemical doesn't exist in any cabinet
     for (int i = 0; i < total_cabinets; i++) {
+
+        for (int j = 0; j < cabinets[i].getRows(); j++) {
+
+            for (int k = 0; k < cabinets[i].getColumns(); k++) {
+
+                if (cabinets[i].chemicals[j][k].getId() == chemID) {
+                    cout << "Chemical with ID " << chemID << " already exists in the system" << endl;
+                    return;
+                };
+
+            }
+        }
+    }
+
+    for (int i = 0; i < total_cabinets; i++) {
+
         if (cabinets[i].getId() == cabinetId) {
 
-            cabinets[i].placeChemical(location, chemicalType, chemID);
+            cabinets[i].placeChemical(location, chemicalType, chemID, chemType);
+
+            return;
 
         }
     }
@@ -172,11 +250,55 @@ void LabOrganizer::placeChemical(int cabinetId, string location, string chemType
 }
 
 void LabOrganizer::findChemical(int id) {
+    bool chemicalFound = false;
 
+    for (int i = 0; i < total_cabinets; i++) {
+
+        for (int j = 0; j < cabinets[i].getRows(); j++) {
+
+            for (int k = 0; k < cabinets[i].getColumns(); k++) {
+
+                if (cabinets[i].chemicals[j][k].getId() == id) {
+                    cout << "Chemical " << id << " is at location " << cabinets[i].indexToLocation(j, k) << " in cabinet " << cabinets[i].getId() << endl;
+                    chemicalFound = true;
+                    return;
+                };
+
+            }
+        }
+    }
+
+    if (!chemicalFound) {
+        cout << "Chemical " << id << " is not in the system" << endl;
+    }
 }
 
 void LabOrganizer::removeChemical(int id) {
 
+    for (int i = 0; i < total_cabinets; i++) {
+
+        for (int j = 0; j < cabinets[i].getRows(); j++) {
+
+            for (int k = 0; k < cabinets[i].getColumns(); k++) {
+
+                if (cabinets[i].chemicals[j][k].getId() == id) {
+
+                    cabinets[i].chemicals[j][k].setId(0);
+                    cabinets[i].chemicals[j][k].setLocation("");
+                    cabinets[i].chemicals[j][k].setType('+');
+
+                    cout << "Chemical " << id << " removed from cabinet " << cabinets[i].getId() << endl;
+
+                    return;
+                }
+
+            }
+
+        }
+
+    }
+
+    cout << "Chemical " << id << " is not in the system" << endl;
 }
 
 // Additionally added methods

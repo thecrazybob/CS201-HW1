@@ -77,6 +77,10 @@ Cabinet::Cabinet(int new_id, int new_rows, int new_columns) {
 
 Cabinet::~Cabinet() {
 
+    id = 0;
+    rows = 0;
+    columns = 0;
+
     for (int i = 0; i < rows; i++) {
         delete [] chemicals[i];
     }
@@ -137,7 +141,7 @@ void Cabinet::showContents() {
 
 }
 
-void Cabinet::placeChemical(string location, char chemType, int chemId) {
+void Cabinet::placeChemical(string location, char chemType, int chemId, string chemName) {
 
     // Number of locations found
     int locationsFound = 0;
@@ -158,12 +162,6 @@ void Cabinet::placeChemical(string location, char chemType, int chemId) {
     for (int i = 0; i < this->getRows(); i++) {
         for (int j = 0; j < this->getColumns(); j++) {
 
-            // Verify if a chemical of the same ID exists
-            if (chemicals[i][j].getId() == id) {
-                cout << "Chemical with ID " << id << " already exists in the system";
-                return;
-            }
-
             if (chemicals[i][j].getType() == '+') {
                 availableLocations[locationsFound] = this->indexToLocation(i, j);
 
@@ -174,38 +172,84 @@ void Cabinet::placeChemical(string location, char chemType, int chemId) {
         }
     }
 
-    int* locationIndex = this->locationToIndex(location);
+    int * locationIndex = this->locationToIndex(location);
 
-    cout << locationIndex[0];
+    // cout << "location: " << location << " locationIndex: " << locationIndex[0] << " locationIndex: " << locationIndex[1] << " cabinet: " << id << " chemical: " << chemicals[locationIndex[0]][locationIndex[1]].getType() << endl;
 
-    // // Check if the specificed location is empty
-    // if (chemicals[locationIndex[0]][locationIndex[1]].getType() != '+') {
-    //     cout << "Location " << location << " in cabinet " << id << " is already occupied. Nearest possible location for this chemical: ";
-    //     return;
-    // }
-    // else {
+    // Verify if the specificed location is empty
+    if (chemicals[locationIndex[0]][locationIndex[1]].getType() != '+') {
 
-        // chemicals[locationIndex[0]][locationIndex[1]].setId(chemId);
-        // chemicals[locationIndex[0]][locationIndex[1]].setType(chemType);
+        cout << "Location " << location << " in cabinet " << id << " is already occupied. Nearest possible location for this chemical: " << endl;
+        return;
 
-        // cout << chemType << " chemical with ID " << chemId << " has been placed at location " << location << " in cabinet " << id << endl;
+    }
+    else {
 
-    // }
+        // The chemical is not retardant
+        if (chemType != 'r') {
+            bool haveTopRow;
+            bool haveBottomRow;
+            bool haveLeftCol;
+            bool haveRightCol;
 
-    // Check if there are top and bottom rows
+            bool dangerous = false;
 
-    // Check if there are columns
+            // Check if there are top and bottom rows
+            haveTopRow = rows - locationIndex[0] == rows ? false : true;
+            haveBottomRow = rows - locationIndex[0] == 1 ? false : true;
 
-    // (a) For each row check not allowed chemical
+            // Check if there are left and right columns
+            haveLeftCol = columns - locationIndex[1] == columns ? false : true;
+            haveRightCol = columns - locationIndex[1] == 1 ? false : true;
 
-    // (b) For each column check not allowed chemical
+            // (a) For each row check not allowed chemical
+            // (b) For each column check not allowed chemical
+            if (haveTopRow) {
+                chemicals[locationIndex[0]-1][locationIndex[1]].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+            }
 
-    // If (a) + (b) is greater than 1 then find another empty space and repeat
+            if (haveBottomRow) {
+                chemicals[locationIndex[0]+1][locationIndex[1]].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+            }
 
-    // If all empty spaces give (a) + (b) > 0 then do not place chemical
+            if (haveLeftCol) {
+                chemicals[locationIndex[0]][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+            }
 
-    // Else place chemical
+            if (haveRightCol) {
+                chemicals[locationIndex[0]][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+            }
 
+            if (haveTopRow && haveLeftCol) {
+                chemicals[locationIndex[0]-1][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+            }
+
+            if (haveTopRow && haveRightCol) {
+                chemicals[locationIndex[0]-1][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+            }
+
+            if (haveBottomRow && haveLeftCol) {
+                chemicals[locationIndex[0]+1][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+            }
+
+            if (haveBottomRow && haveRightCol) {
+                chemicals[locationIndex[0]+1][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+            }
+
+            if (dangerous) {
+                cout << "Location " << location << " in cabinet " << id << " is not suitable for a combustive chemical. Nearest possible locations for this chemical: " << endl;
+                return;
+            }
+
+        }
+
+        // Else place chemical
+        chemicals[locationIndex[0]][locationIndex[1]].setId(chemId);
+        chemicals[locationIndex[0]][locationIndex[1]].setType(chemType);
+
+        cout << chemName << " chemical with ID " << chemId << " has been placed at location " << location << " in cabinet " << id << endl;
+
+    }
 
 
 }
@@ -216,118 +260,118 @@ void Cabinet::removeChemical(int id) {
 
 int * Cabinet::locationToIndex(const string &location) {
 
-    // Manipulate location - C1 = C is column while 1 is row and store it as row and column
-    char column = location[0];
-    char row = location[1];
+    // Manipulate location
+    char row = location[0];
+    char column = location[1];
 
     // Outputs
-    int * output[2];
+    static int output[2];
 
     switch (row) {
-        case '1':
-            *output[0] = 0;
-
-            break;
-
-        case '2':
-            *output[0] = 1;
-
-            break;
-
-        case '3':
-            *output[0] = 2;
-
-            break;
-
-        case '4':
-            *output[0] = 3;
-
-            break;
-
-        case '5':
-            *output[0] = 4;
-
-            break;
-
-        case '6':
-            *output[0] = 5;
-
-            break;
-
-        case '7':
-            *output[0] = 6;
-
-            break;
-
-        case '8':
-            *output[0] = 7;
-
-            break;
-
-        case '9':
-            *output[0] = 8;
-
-            break;
-
-        default:
-
-            *output[0] = 0;
-            break;
-    }
-
-    switch (column) {
         case 'A':
-            *output[1] = 0;
+            output[0] = 0;
 
             break;
 
         case 'B':
-            *output[1] = 1;
+            output[0] = 1;
 
             break;
 
         case 'C':
-            *output[1] = 2;
+            output[0] = 2;
 
             break;
 
         case 'D':
-            *output[1] = 3;
+            output[0] = 3;
 
             break;
 
         case 'E':
-            *output[1] = 4;
+            output[0] = 4;
 
             break;
 
         case 'F':
-            *output[1] = 5;
+            output[0] = 5;
 
             break;
 
         case 'G':
-            *output[1] = 6;
+            output[0] = 6;
 
             break;
 
         case 'H':
-            *output[1] = 7;
+            output[0] = 7;
 
             break;
 
         case 'I':
-            *output[1] = 8;
+            output[0] = 8;
 
             break;
 
         default:
 
-            *output[1] = 9;
+            output[0] = 9;
             break;
     }
 
-    return * output;
+    switch (column) {
+        case '1':
+            output[1] = 0;
+
+            break;
+
+        case '2':
+            output[1] = 1;
+
+            break;
+
+        case '3':
+            output[1] = 2;
+
+            break;
+
+        case '4':
+            output[1] = 3;
+
+            break;
+
+        case '5':
+            output[1] = 4;
+
+            break;
+
+        case '6':
+            output[1] = 5;
+
+            break;
+
+        case '7':
+            output[1] = 6;
+
+            break;
+
+        case '8':
+            output[1] = 7;
+
+            break;
+
+        case '9':
+            output[1] = 8;
+
+            break;
+
+        default:
+
+            output[1] = 0;
+            break;
+    }
+
+    return output;
 }
 
 string Cabinet::indexToLocation(const int &i, const int &j) {
@@ -337,107 +381,107 @@ string Cabinet::indexToLocation(const int &i, const int &j) {
 
     switch (i) {
         case 0:
-            row = "1";
+            row = "A";
 
             break;
 
         case 1:
-            row = "2";
+            row = "B";
 
             break;
 
         case 2:
-            row = "3";
+            row = "C";
 
             break;
 
         case 3:
-            row = "4";
+            row = "D";
 
             break;
 
         case 4:
-            row = "5";
+            row = "E";
 
             break;
 
         case 5:
-            row = "6";
+            row = "F";
 
             break;
 
         case 6:
-            row = "7";
+            row = "G";
 
             break;
 
         case 7:
-            row = "8";
+            row = "H";
 
             break;
 
         case 8:
-            row = "9";
+            row = "I";
 
             break;
 
         default:
 
-            row = "1";
+            row = "A";
             break;
     }
 
     switch (j) {
         case 0:
-            column = "A";
+            column = "1";
 
             break;
 
         case 1:
-            column = "B";
+            column = "2";
 
             break;
 
         case 2:
-            column = "C";
+            column = "3";
 
             break;
 
         case 3:
-            column = "D";
+            column = "4";
 
             break;
 
         case 4:
-            column = "E";
+            column = "5";
 
             break;
 
         case 5:
-            column = "F";
+            column = "6";
 
             break;
 
         case 6:
-            column = "G";
+            column = "7";
 
             break;
 
         case 7:
-            column = "H";
+            column = "8";
 
             break;
 
         case 8:
-            column = "I";
+            column = "9";
 
             break;
 
         default:
 
-            column = "A";
+            column = "1";
             break;
     }
 
-    return column + row;
+    return row + column;
 }

@@ -24,11 +24,15 @@ ID: 205, Dim: 4x4, Number of empty slots: 16
 Testing remove cabinet
 
 Cabinet 452 does not exist in the system
+rows(): 0 columns(): 0
 Cabinet 101 has been removed
+rows(): 0 columns(): 0
 Cabinet 205 has been removed
 
+rows(): 0 columns(): 0
 Cabinet 203 has been removed
 Cabinet 347 does not exist in the system
+rows(): 0 columns(): 0
 Cabinet 201 has been removed
 
 Added a cabinet: ID 101 and dimensions 7 to 7
@@ -41,21 +45,44 @@ ID: 101, Dim: 7x7, Number of empty slots: 49
 
 Testing place chemical
 
+Combustive chemical with ID 200 has been placed at location C1 in cabinet 101
+Location C1 in cabinet 101 is already occupied. Nearest possible location for this chemical: 
+Retardant chemical with ID 139 has been placed at location D3 in cabinet 101
 
+Combustive chemical with ID 188 has been placed at location E3 in cabinet 101
+Location D2 in cabinet 101 is not suitable for a combustive chemical. Nearest possible locations for this chemical: 
+Combustive chemical with ID 888 has been placed at location E1 in cabinet 101
+Chemical with ID 200 already exists in the system
+Combustive chemical with ID 156 has been placed at location B2 in cabinet 102
 
+Retardant chemical with ID 190 has been placed at location C3 in cabinet 102
+Location A3 in cabinet 102 is not suitable for a combustive chemical. Nearest possible locations for this chemical: 
+Combustive chemical with ID 171 has been placed at location E1 in cabinet 102
 
+Chemical with ID 139 already exists in the system
+Combustive chemical with ID 144 has been placed at location B2 in cabinet 103
+Retardant chemical with ID 120 has been placed at location C3 in cabinet 103
 
+Retardant chemical with ID 127 has been placed at location A1 in cabinet 103
+Combustive chemical with ID 191 has been placed at location G8 in cabinet 103
 
 List of all cabinets:
-ID: 102, Dim: 5x3, Number of empty slots: 15
-ID: 103, Dim: 8x8, Number of empty slots: 64
-ID: 101, Dim: 7x7, Number of empty slots: 49
+ID: 102, Dim: 5x3, Number of empty slots: 12
+ID: 103, Dim: 8x8, Number of empty slots: 60
+ID: 101, Dim: 7x7, Number of empty slots: 45
 
 
 Testing find chemical
 
+Chemical 191 is at location G8 in cabinet 103
+Chemical 156 is at location B2 in cabinet 102
+Chemical 171 is at location E1 in cabinet 102
 
+Chemical 155 is not in the system
+Chemical 100 is not in the system
+Chemical 200 is at location C1 in cabinet 101
 
+Chemical 139 is at location D3 in cabinet 101
 
 
 Testing show cabinet contents
@@ -67,9 +94,17 @@ Testing show cabinet contents
 
 Testing remove chemical
 
+Chemical 156 removed from cabinet 102
+Chemical 177 is not in the system
+Chemical 188 removed from cabinet 101
 
+Chemical 189 is not in the system
+Chemical 777 is not in the system
+Chemical 127 removed from cabinet 103
 
+rows(): 0 columns(): 0
 Cabinet 103 has been removed
 
+rows(): 0 columns(): 0
 Cabinet 102 has been removed
 
