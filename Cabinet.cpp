@@ -1,3 +1,6 @@
+// Mohammed Sohail
+// 22001513
+
 #include <string>
 #include <iostream>
 #include "Cabinet.h"
@@ -133,14 +136,6 @@ void Cabinet::setColumns(int new_columns) {
 
 // Methods specific to chemicals
 
-void Cabinet::findChemical(int id) {
-
-}
-
-void Cabinet::showContents() {
-
-}
-
 void Cabinet::placeChemical(string location, char chemType, int chemId, string chemName) {
 
     // Number of locations found
@@ -172,74 +167,77 @@ void Cabinet::placeChemical(string location, char chemType, int chemId, string c
         }
     }
 
-    int * locationIndex = this->locationToIndex(location);
+    int * locationIndex = locationToIndex(location);
 
     // cout << "location: " << location << " locationIndex: " << locationIndex[0] << " locationIndex: " << locationIndex[1] << " cabinet: " << id << " chemical: " << chemicals[locationIndex[0]][locationIndex[1]].getType() << endl;
 
     // Verify if the specificed location is empty
     if (chemicals[locationIndex[0]][locationIndex[1]].getType() != '+') {
 
-        cout << "Location " << location << " in cabinet " << id << " is already occupied. Nearest possible location for this chemical: " << endl;
+        cout << "Location " << location << " in cabinet " << id << " is already occupied. Nearest possible location for this chemical: ";
+        int emptyNeighbors = 0;
+        string * locations = nearestLocations(location, emptyNeighbors, chemType);
+        delete [] locations;
+        cout << endl;
         return;
 
     }
     else {
 
-        // The chemical is not retardant
+        // If the chemical is not retardant
         if (chemType != 'r') {
-            bool haveTopRow;
-            bool haveBottomRow;
-            bool haveLeftCol;
-            bool haveRightCol;
 
-            bool dangerous = false;
+            // Verify if there is a combustant in its immediate neighbors
+            if (isNeighborCombustant(location)) {
 
-            // Check if there are top and bottom rows
-            haveTopRow = rows - locationIndex[0] == rows ? false : true;
-            haveBottomRow = rows - locationIndex[0] == 1 ? false : true;
+                // Print out message saying location is not suitable
+                cout << "Location " << location << " in cabinet " << id << " is not suitable for a combustive chemical. Nearest possible locations for this chemical: ";
 
-            // Check if there are left and right columns
-            haveLeftCol = columns - locationIndex[1] == columns ? false : true;
-            haveRightCol = columns - locationIndex[1] == 1 ? false : true;
+                int possibilitiesFound = 0;
 
-            // (a) For each row check not allowed chemical
-            // (b) For each column check not allowed chemical
-            if (haveTopRow) {
-                chemicals[locationIndex[0]-1][locationIndex[1]].getType() == 'c' ? dangerous = true : dangerous = dangerous;
-            }
+                int index = locationToIndex(location)[0];
 
-            if (haveBottomRow) {
-                chemicals[locationIndex[0]+1][locationIndex[1]].getType() == 'c' ? dangerous = true : dangerous = dangerous;
-            }
+                while (possibilitiesFound == 0 && index < getRows()) {
 
-            if (haveLeftCol) {
-                chemicals[locationIndex[0]][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
-            }
+                    // Create empty int to pass to nearestLocation()
+                    int emptyLocations = 0;
 
-            if (haveRightCol) {
-                chemicals[locationIndex[0]][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
-            }
+                    // Get empty locations in surroundings
+                    string * locations = nearestLocations(location, emptyLocations, chemType);
 
-            if (haveTopRow && haveLeftCol) {
-                chemicals[locationIndex[0]-1][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
-            }
+                    // Check if location in surrounding is suitable for combustant
+                    for (int i = 0; i < emptyLocations; i++) {
 
-            if (haveTopRow && haveRightCol) {
-                chemicals[locationIndex[0]-1][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
-            }
+                        if (!isNeighborCombustant(locations[i])) {
 
-            if (haveBottomRow && haveLeftCol) {
-                chemicals[locationIndex[0]+1][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
-            }
+                            possibilitiesFound += 1;
+                            cout << locations[i];
+                            if (i + 1 != emptyLocations) {
+                                cout << ", ";
+                            }
+                        }
 
-            if (haveBottomRow && haveRightCol) {
-                chemicals[locationIndex[0]+1][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
-            }
+                    }
 
-            if (dangerous) {
-                cout << "Location " << location << " in cabinet " << id << " is not suitable for a combustive chemical. Nearest possible locations for this chemical: " << endl;
+                    int newLocationRow = locationToIndex(location)[0] + 1;
+                    int newLocationCol = locationToIndex(location)[1];
+
+                    string newLocation = indexToLocation(newLocationRow, newLocationCol);
+
+                    location = newLocation;
+
+
+                    delete [] locations;
+
+                    index++;
+
+                }
+
+                cout << endl;
+
+                // Do not place the chemical if a combustant is found in the location's neighboring places
                 return;
-            }
+            };
 
         }
 
@@ -250,11 +248,6 @@ void Cabinet::placeChemical(string location, char chemType, int chemId, string c
         cout << chemName << " chemical with ID " << chemId << " has been placed at location " << location << " in cabinet " << id << endl;
 
     }
-
-
-}
-
-void Cabinet::removeChemical(int id) {
 
 }
 
@@ -484,4 +477,227 @@ string Cabinet::indexToLocation(const int &i, const int &j) {
     }
 
     return row + column;
+}
+
+string * Cabinet::nearestLocations(string location, int &locationsFound, char type) {
+
+    bool firstFound = false;
+
+    int * locationIndex = locationToIndex(location);
+
+    bool haveTopRow, haveBottomRow, haveLeftCol, haveRightCol = false;
+    bool topFree = false;
+    bool bottomFree = false;
+    bool leftFree = false;
+    bool rightFree = false;
+    bool topLeftFree = false;
+    bool topRightFree = false;
+    bool bottomLeftFree = false;
+    bool bottomRightFree = false;
+
+    // Check if there are top and bottom rows
+    haveTopRow = rows - locationIndex[0] == rows ? false : true;
+    haveBottomRow = rows - locationIndex[0] == 1 ? false : true;
+
+    // Check if there are left and right columns
+    haveLeftCol = columns - locationIndex[1] == columns ? false : true;
+    haveRightCol = columns - locationIndex[1] == 1 ? false : true;
+
+    if (haveTopRow) {
+        topFree = chemicals[locationIndex[0]-1][locationIndex[1]].getType() == '+' ? true : false;
+    }
+
+    if (haveBottomRow) {
+        bottomFree = chemicals[locationIndex[0]+1][locationIndex[1]].getType() == '+' ? true : false;
+    }
+
+    if (haveLeftCol) {
+        leftFree = chemicals[locationIndex[0]][locationIndex[1]-1].getType() == '+' ? true : false;
+    }
+
+    if (haveRightCol) {
+        rightFree = chemicals[locationIndex[0]][locationIndex[1]+1].getType() == '+' ? true : false;
+    }
+
+    if (haveTopRow && haveLeftCol) {
+        topLeftFree = chemicals[locationIndex[0]-1][locationIndex[1]-1].getType() == '+' ? true : false;
+    }
+
+    if (haveTopRow && haveRightCol) {
+        topRightFree = chemicals[locationIndex[0]-1][locationIndex[1]+1].getType() == '+' ? true : false;
+    }
+
+    if (haveBottomRow && haveLeftCol) {
+        bottomLeftFree = chemicals[locationIndex[0]+1][locationIndex[1]-1].getType() == '+' ? true : false;
+    }
+
+    if (haveBottomRow && haveRightCol) {
+        bottomRightFree = chemicals[locationIndex[0]+1][locationIndex[1]+1].getType() == '+' ? true : false;
+    }
+
+    // Number of locations that are free
+    if (topFree) {
+        locationsFound += 1;
+    }
+
+    if (bottomFree) {
+        locationsFound += 1;
+    }
+
+    if (leftFree) {
+        locationsFound += 1;
+    }
+
+    if (rightFree) {
+        locationsFound += 1;
+    }
+
+    if (topLeftFree) {
+        locationsFound += 1;
+    }
+
+    if (topRightFree) {
+        locationsFound += 1;
+    }
+
+    if (bottomLeftFree) {
+        locationsFound += 1;
+    }
+
+    if (bottomRightFree) {
+        locationsFound += 1;
+    }
+
+    string * nearestLocations = new string[locationsFound];
+
+    for (int i = 0; i < locationsFound; i++) {
+
+        if (topFree) {
+
+            nearestLocations[i] = indexToLocation(locationIndex[0]-1,locationIndex[1]);
+            topFree = false;
+
+        }
+
+        else if (bottomFree) {
+
+            nearestLocations[i] = indexToLocation(locationIndex[0]+1,locationIndex[1]);
+            bottomFree = false;
+
+        }
+
+        else if (leftFree) {
+
+            nearestLocations[i] = indexToLocation(locationIndex[0],locationIndex[1]-1);
+            leftFree = false;
+
+        }
+
+        else if (rightFree) {
+
+            nearestLocations[i] = indexToLocation(locationIndex[0],locationIndex[1]+1);
+            rightFree = false;
+
+        }
+
+        else if (topLeftFree) {
+
+            nearestLocations[i] = indexToLocation(locationIndex[0]-1,locationIndex[1]-1);
+            topLeftFree = false;
+
+        }
+
+        else if (topRightFree) {
+
+            nearestLocations[i] = indexToLocation(locationIndex[0]-1,locationIndex[1]+1);
+            topRightFree = false;
+
+        }
+
+        else if (bottomLeftFree) {
+
+            nearestLocations[i] = indexToLocation(locationIndex[0]+1,locationIndex[1]-1);
+            bottomLeftFree = false;
+
+        }
+
+        else if (bottomRightFree) {
+
+            nearestLocations[i] = indexToLocation(locationIndex[0]+1,locationIndex[1]+1);
+            bottomRightFree = false;
+
+        }
+
+        if (type == 'r') {
+            if (!firstFound) {
+                cout << nearestLocations[i];
+            }
+            else {
+                cout << ", " << nearestLocations[i];
+            }
+        }
+
+        firstFound = true;
+
+    }
+
+    return nearestLocations;
+
+}
+
+bool Cabinet::isNeighborCombustant(string location) {
+
+    int * locationIndex = this->locationToIndex(location);
+
+    bool haveTopRow;
+    bool haveBottomRow;
+    bool haveLeftCol;
+    bool haveRightCol;
+
+    bool dangerous = false;
+
+    // Check if there are top and bottom rows
+    haveTopRow = rows - locationIndex[0] == rows ? false : true;
+    haveBottomRow = rows - locationIndex[0] == 1 ? false : true;
+
+    // Check if there are left and right columns
+    haveLeftCol = columns - locationIndex[1] == columns ? false : true;
+    haveRightCol = columns - locationIndex[1] == 1 ? false : true;
+
+    // (a) For each row check not allowed chemical
+    // (b) For each column check not allowed chemical
+    if (haveTopRow) {
+        chemicals[locationIndex[0]-1][locationIndex[1]].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+    }
+
+    if (haveBottomRow) {
+        chemicals[locationIndex[0]+1][locationIndex[1]].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+    }
+
+    if (haveLeftCol) {
+        chemicals[locationIndex[0]][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+    }
+
+    if (haveRightCol) {
+        chemicals[locationIndex[0]][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+    }
+
+    if (haveTopRow && haveLeftCol) {
+        chemicals[locationIndex[0]-1][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+    }
+
+    if (haveTopRow && haveRightCol) {
+        chemicals[locationIndex[0]-1][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+    }
+
+    if (haveBottomRow && haveLeftCol) {
+        chemicals[locationIndex[0]+1][locationIndex[1]-1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+    }
+
+    if (haveBottomRow && haveRightCol) {
+        chemicals[locationIndex[0]+1][locationIndex[1]+1].getType() == 'c' ? dangerous = true : dangerous = dangerous;
+    }
+
+    return dangerous;
+
 }

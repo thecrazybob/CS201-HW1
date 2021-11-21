@@ -1,3 +1,6 @@
+// Mohammed Sohail
+// 22001513
+
 #include <iostream>
 #include <string>
 #include "LabOrganizer.h"
@@ -176,6 +179,7 @@ void LabOrganizer::listCabinets() {
 
 void LabOrganizer::cabinetContents(int id) {
 
+    // Used to avoid initial "," when concatenating chemicals
     bool firstFound = false;
 
     for (int i = 0; i < total_cabinets; i++) {

@@ -1,3 +1,6 @@
+// Mohammed Sohail
+// 22001513
+
 #include <string>
 #include "Chemical.h"
 using namespace std;

@@ -42,17 +42,17 @@ ID: 101, Dim: 7x7, Number of empty slots: 49
 Testing place chemical
 
 Combustive chemical with ID 200 has been placed at location C1 in cabinet 101
-Location C1 in cabinet 101 is already occupied. Nearest possible location for this chemical: 
+Location C1 in cabinet 101 is already occupied. Nearest possible location for this chemical: B1, D1, C2, B2, D2
 Retardant chemical with ID 139 has been placed at location D3 in cabinet 101
 
 Combustive chemical with ID 188 has been placed at location E3 in cabinet 101
-Location D2 in cabinet 101 is not suitable for a combustive chemical. Nearest possible locations for this chemical: 
+Location D2 in cabinet 101 is not suitable for a combustive chemical. Nearest possible locations for this chemical: C3, E1
 Combustive chemical with ID 888 has been placed at location E1 in cabinet 101
 Chemical with ID 200 already exists in the system
 Combustive chemical with ID 156 has been placed at location B2 in cabinet 102
 
 Retardant chemical with ID 190 has been placed at location C3 in cabinet 102
-Location A3 in cabinet 102 is not suitable for a combustive chemical. Nearest possible locations for this chemical: 
+Location A3 in cabinet 102 is not suitable for a combustive chemical. Nearest possible locations for this chemical: D3, D2
 Combustive chemical with ID 171 has been placed at location E1 in cabinet 102
 
 Chemical with ID 139 already exists in the system
@@ -84,8 +84,34 @@ Chemical 139 is at location D3 in cabinet 101
 Testing show cabinet contents
 
 ID: 101, 7x7, empty: 45. Chemicals: C1: 200, D3: 139, E1: 888, E3: 188
+	1	2	3	4	5	6	7	
+A	+	+	+	+	+	+	+	
+B	+	+	+	+	+	+	+	
+C	c	+	+	+	+	+	+	
+D	+	+	r	+	+	+	+	
+E	c	+	c	+	+	+	+	
+F	+	+	+	+	+	+	+	
+G	+	+	+	+	+	+	+	
+
 ID: 102, 5x3, empty: 12. Chemicals: B2: 156, C3: 190, E1: 171
+	1	2	3	
+A	+	+	+	
+B	+	c	+	
+C	+	+	r	
+D	+	+	+	
+E	c	+	+	
+
 ID: 103, 8x8, empty: 60. Chemicals: A1: 127, B2: 144, C3: 120, G8: 191
+	1	2	3	4	5	6	7	8	
+A	r	+	+	+	+	+	+	+	
+B	+	c	+	+	+	+	+	+	
+C	+	+	r	+	+	+	+	+	
+D	+	+	+	+	+	+	+	+	
+E	+	+	+	+	+	+	+	+	
+F	+	+	+	+	+	+	+	+	
+G	+	+	+	+	+	+	+	c	
+H	+	+	+	+	+	+	+	+	
+
 Cabinet 107 is not in the system
 
 Testing remove chemical

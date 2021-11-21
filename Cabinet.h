@@ -1,3 +1,6 @@
+// Mohammed Sohail
+// 22001513
+
 #include "Chemical.h"
 using namespace std;
 
@@ -35,14 +38,12 @@ class Cabinet {
         void setId(int new_id);
         void setRows(int new_rows);
         void setColumns(int new_columns);
-
-        void findChemical(int id);
-        void showContents();
         void placeChemical(string location, char chemType, int chemId, string chemName);
-        void removeChemical(int id);
 
         // Helper methods
         int * locationToIndex(const string &location);
         string indexToLocation(const int &i, const int &j);
+        bool isNeighborCombustant(string location);
+        string * nearestLocations(string location, int &locationsFound, char type);
 
 };
