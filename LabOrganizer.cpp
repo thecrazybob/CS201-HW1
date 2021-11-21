@@ -68,9 +68,6 @@ void LabOrganizer::addCabinet(int id, int rows, int columns) {
         // Point cabinets pointer to the new array
         cabinets = new_cabinets;
 
-        // Delete new array
-        // delete [] new_cabinets;
-
     }
 
     total_cabinets++;
@@ -186,7 +183,7 @@ void LabOrganizer::cabinetContents(int id) {
         if (cabinets[i].getId() == id) {
             cout << "ID: " << id << ", " << cabinets[i].getRows() << "x" << cabinets[i].getColumns() << ", empty: " << cabinets[i].getEmpty() << ". Chemicals: ";
 
-            // Print out chemicals
+            // Print table overview
             for (int j = 0; j < cabinets[i].getRows(); j++) {
 
                 for (int k = 0; k < cabinets[i].getColumns(); k++) {
@@ -201,6 +198,34 @@ void LabOrganizer::cabinetContents(int id) {
 
                     }
                 }
+
+            }
+
+            cout << endl;
+
+            // Print contents table
+
+            // Print column headings
+            for (int j = 0; j < cabinets[i].getColumns(); j++) {
+                if (j == 0) {
+                    cout << '\t';
+                }
+                cout << j + 1 << '\t';
+            }
+
+            cout << endl;
+
+            // Print row headings
+            for (int j = 0; j < cabinets[i].getRows(); j++) {
+
+                cout << cabinets[i].indexToLocation(j, 0)[0] << '\t';
+
+                // Print contents of each row
+                for (int k = 0; k < cabinets[i].getColumns(); k++) {
+                    cout << cabinets[i].chemicals[j][k].getType() << '\t';
+                }
+
+                cout << endl;
 
             }
 

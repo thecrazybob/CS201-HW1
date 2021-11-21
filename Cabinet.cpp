@@ -77,15 +77,15 @@ Cabinet::Cabinet(int new_id, int new_rows, int new_columns) {
 
 Cabinet::~Cabinet() {
 
-    id = 0;
-    rows = 0;
-    columns = 0;
-
     for (int i = 0; i < rows; i++) {
         delete [] chemicals[i];
     }
 
     delete [] chemicals;
+
+    id = 0;
+    rows = 0;
+    columns = 0;
 
 }
 

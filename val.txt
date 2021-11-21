@@ -24,15 +24,11 @@ ID: 205, Dim: 4x4, Number of empty slots: 16
 Testing remove cabinet
 
 Cabinet 452 does not exist in the system
-rows(): 0 columns(): 0
 Cabinet 101 has been removed
-rows(): 0 columns(): 0
 Cabinet 205 has been removed
 
-rows(): 0 columns(): 0
 Cabinet 203 has been removed
 Cabinet 347 does not exist in the system
-rows(): 0 columns(): 0
 Cabinet 201 has been removed
 
 Added a cabinet: ID 101 and dimensions 7 to 7
@@ -87,10 +83,10 @@ Chemical 139 is at location D3 in cabinet 101
 
 Testing show cabinet contents
 
-
-
-
-
+ID: 101, 7x7, empty: 45. Chemicals: C1: 200, D3: 139, E1: 888, E3: 188
+ID: 102, 5x3, empty: 12. Chemicals: B2: 156, C3: 190, E1: 171
+ID: 103, 8x8, empty: 60. Chemicals: A1: 127, B2: 144, C3: 120, G8: 191
+Cabinet 107 is not in the system
 
 Testing remove chemical
 
@@ -102,9 +98,12 @@ Chemical 189 is not in the system
 Chemical 777 is not in the system
 Chemical 127 removed from cabinet 103
 
-rows(): 0 columns(): 0
+Chemical 144 removed from cabinet 103
+Chemical 120 removed from cabinet 103
+Chemical 191 removed from cabinet 103
 Cabinet 103 has been removed
 
-rows(): 0 columns(): 0
+Chemical 190 removed from cabinet 102
+Chemical 171 removed from cabinet 102
 Cabinet 102 has been removed
 
